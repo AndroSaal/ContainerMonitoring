@@ -9,11 +9,11 @@ import (
 )
 
 type Handler struct {
-	service service.Service
-	logger  slog.Logger
+	service service.ServiceHandler
+	logger  *slog.Logger
 }
 
-func NewHandler(service service.Service, logger slog.Logger) *Handler {
+func NewHandler(service service.ServiceHandler, logger *slog.Logger) *Handler {
 	return &Handler{
 		service: service,
 		logger:  logger,
@@ -28,6 +28,6 @@ func (h *Handler) getContainerInfo(c *gin.Context) {
 	newErrorResponse(c, http.StatusAccepted, "hehe")
 }
 
-func (h *Handler) addCreateContainerInfo(c *gin.Context) {
+func (h *Handler) addContainerInfo(c *gin.Context) {
 	newErrorResponse(c, http.StatusAccepted, "hehe")
 }

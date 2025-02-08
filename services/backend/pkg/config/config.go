@@ -37,19 +37,6 @@ type ServerConfig struct {
 
 // конфигурация REST API Сервера
 
-// MustLoadEnv загружает переменные окружения из файла .env,
-// возвращает установленное окружение (local/dev/prod)
-func LoadEnv() error {
-	fi := "config.MustLoadEnv"
-
-	//путь до файла .env
-	if err := godotenv.Load("config/.env"); err != nil {
-		log.Printf(fi + ": " + err.Error())
-		return err
-	}
-	return nil
-}
-
 func MustLoadConfig() ServiceConfig {
 	fi := "config.MustLoadConfig"
 
@@ -78,6 +65,19 @@ func MustLoadConfig() ServiceConfig {
 
 	return *UserConf
 
+}
+
+// MustLoadEnv загружает переменные окружения из файла .env,
+// возвращает установленное окружение (local/dev/prod)
+func LoadEnv() error {
+	fi := "config.MustLoadEnv"
+
+	//путь до файла .env
+	if err := godotenv.Load("config/.env"); err != nil {
+		log.Printf(fi + ": " + err.Error())
+		return err
+	}
+	return nil
 }
 
 func getConfigLocation() (string, string, error) {

@@ -9,7 +9,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		pingInfo.GET("", h.getAllContainersInfo)
 		pingInfo.GET("/:id", h.getContainerInfo)
-		pingInfo.POST("", h.addCreateContainerInfo)
+		pingInfo.POST("", h.addContainerInfo)
 	}
 
 	return router
