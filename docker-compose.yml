@@ -1,0 +1,35 @@
+services:
+  backend-service:
+    container_name: backend-service
+    image: backend-service
+    build:
+      context: ./services/backend
+      dockerfile: local.Dockerfile
+    environment:
+      - DB_HOST=backend-postgres
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./services/backend:/usr/src/app
+    depends_on:
+      - backend-postgres
+
+  backend-postgres:
+    container_name: backend-postgres
+    image: postgres:14.8-alpine3.18
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "qwerty"
+      PGSSLMODE: "disable"
+    volumes:
+      - ./services/backend/migration/000001_init.up.sql:/docker-entrypoint-initdb.d/initdb.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: always

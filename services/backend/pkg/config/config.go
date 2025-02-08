@@ -144,10 +144,18 @@ func LoadConfig(path string, name string) (*ServiceConfig, error) {
 	if err := viper.UnmarshalKey("db", &dbConf); err != nil {
 		return nil, err
 	}
-	if dbConf.Host == "localhost" {
+	if dbConf.Host == "localhost" || dbConf.Host == "" {
 		dbConf.Host = os.Getenv("DB_HOST")
 		if dbConf.Host == "" {
 			dbConf.Host = "localhost"
+		}
+	}
+
+	if dbConf.Password == "" {
+		dbConf.Password = os.Getenv("DB_PASSWORD")
+		if dbConf.Password == "" {
+			log.Default().Println("password for database is not set")
+			dbConf.Password = "password"
 		}
 	}
 
@@ -156,10 +164,15 @@ func LoadConfig(path string, name string) (*ServiceConfig, error) {
 		return nil, err
 	}
 	srvConf.Env = os.Getenv("ENVIRONMENT")
+	if srvConf.Env == "" {
+		log.Default().Println("ENVIRONMENT is not set, make it defaul: local")
+		srvConf.Env = "local"
+	}
 
 	return &ServiceConfig{
 		SrvConf: srvConf,
 		DBConf:  dbConf,
+		Env:     srvConf.Env,
 	}, nil
 
 }

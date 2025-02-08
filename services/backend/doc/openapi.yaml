@@ -1,0 +1,123 @@
+openapi: 3.0.3
+info:
+  title: backand Service Information
+  version: 0.0.1
+
+paths:
+  /ping:
+    get:
+      responses:
+        '200':
+          description: Корректный сценарий
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                    $ref: '#/components/schemas/PingInfo'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+                
+    post:
+      summary: Добавить информацию о контейнере
+      description: Добавляет новую запись о пинге контейнера.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PingInfo'
+      responses:
+        '200':
+          description: Корректный сценарий
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ok'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+  /ping/{ip}:
+    get:
+      summary: Получить информацию о конкретном контейнере
+      description: Возвращает информацию о пинге для конкретного контейнера по его IP.
+      parameters:
+        - name: ip
+          in: path
+          required: true
+          schema:
+            type: string
+            description: IP контейнера
+            example: 172.18.0.6
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PingInfo'
+        '404':
+          description: Контейнер не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        
+      
+
+components:
+  schemas:
+    PingInfo:
+      required:
+        - IPAdress
+        - PingTime
+        - LastSuccessDate
+      type: object
+      properties:
+        ipAdress:
+          type: string
+          example: 172.18.0.6
+        pingTime:
+          type: string
+          example: 19:02:53
+        lastSuccessDate:
+          type: string
+          example: 22.02.2024
+    errorResponse:
+      type: object
+      description: Используется для возвращения ошибки пользователю
+      properties:
+        reason:
+          type: string
+          description: Описание ошибки в свободной форме
+          minLength: 5
+          example: какая-то ошибка
+      required:
+        - reason
+    ok:
+      type: string

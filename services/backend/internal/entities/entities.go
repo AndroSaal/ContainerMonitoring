@@ -1,12 +1,15 @@
 package entities
 
-import "time"
+import (
+	"time"
+)
 
 type ErrorResponse struct {
 	Reason string `json:"reason"`
 }
 
 type PingInfo struct {
-	ContainerId int
-	PingDate    time.Time
+	IPAdress    string      `json:"ipAdress"`
+	PingTime    time.Time   `json:"pingTime"`
+	LastSuccess interface{} `json:"lastSuccessDate"`
 }

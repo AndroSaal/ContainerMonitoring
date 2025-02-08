@@ -20,7 +20,7 @@ func MustNewLogger(env string) *slog.Logger {
 	case "prod":
 		logger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
 	default:
-		log.Fatal(fi + ":" + "Wrong evironment: " + env)
+		log.Panic(fi + ":" + "Wrong evironment: " + env)
 	}
 
 	return logger

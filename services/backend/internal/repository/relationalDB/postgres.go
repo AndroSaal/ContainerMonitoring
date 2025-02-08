@@ -8,6 +8,7 @@ import (
 	"github.com/AndroSaal/ContainerMonitoring/services/backend/internal/entities"
 	"github.com/AndroSaal/ContainerMonitoring/services/backend/pkg/config"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 type PostgreDB struct {
@@ -36,7 +37,7 @@ func (p *PostgreDB) AddPingInfo(ctx context.Context, pingfInfo entities.PingInfo
 	return 0, nil
 }
 
-func (p *PostgreDB) GetPingInfo(ctx context.Context, containerId int) (entities.PingInfo, error) {
+func (p *PostgreDB) GetPingInfo(ctx context.Context, ipAdress string) (entities.PingInfo, error) {
 	return entities.PingInfo{}, nil
 }
 
