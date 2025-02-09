@@ -1,0 +1,4 @@
+server:
+  port: "8081"
+  host: "localhost"
+  timeout: "10h"

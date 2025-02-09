@@ -11,6 +11,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		pingInfo.GET("/:id", h.getContainerInfo)
 		pingInfo.POST("", h.addContainerInfo)
 	}
-
+	h.logger.Info("Routes inited")
 	return router
 }
