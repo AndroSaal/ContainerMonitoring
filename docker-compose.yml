@@ -33,3 +33,16 @@ services:
       retries: 5
       start_period: 10s
     restart: always
+
+  pinger-service:
+    container_name: pinger-service
+    image: pinger-service
+    build:
+      context: ./services/pinger
+      dockerfile: local.Dockerfile
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./services/pinger:/usr/src/app
+    depends_on:
+      - backend-service
