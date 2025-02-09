@@ -47,3 +47,16 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - backend-service
+
+  frontend-service:
+    container_name: frontend-service
+    image: frontend-service
+    build: 
+      context: ./services/frontend
+      dockerfile: local.Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend-service
+    environment:
+      - REACT_APP_API_URL=http://backend-service:8080/ping
