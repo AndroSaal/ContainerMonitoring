@@ -53,25 +53,26 @@ func (p *PostgreDB) AddPingInfo(ctx context.Context, pingfInfo entities.PingInfo
 		"SELECT %s FROM %s WHERE %s = $1",
 		idField, ipTable, ipField,
 	)
-	rowSelect := p.db.QueryRow(querySelect)
+	rowSelect := p.db.QueryRow(querySelect, pingfInfo.IPAdress)
 
 	var ipFromDatabase string
 	if err := rowSelect.Scan(&ipFromDatabase); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			// если нет, то добавляем
 			queryInsert := fmt.Sprintf(
-				"INSERT INTO %s (%s, %s) VALUES ($1)",
+				"INSERT INTO %s (%s, %s) VALUES ($1, $2)",
 				ipTable, ipField, lastSuccessField,
 			)
-			_, err := p.db.Exec(queryInsert, pingfInfo.IPAdress, "none")
+			_, err := p.db.Exec(queryInsert, pingfInfo.IPAdress, pingfInfo.LastSuccess)
 			if err != nil {
-				p.log.Error("Error inserting data to database: " + err.Error())
+				p.log.Error("Error inserting data to database(1): " + err.Error())
 				return err
 			}
 			ipFromDatabase = pingfInfo.IPAdress
+		} else {
+			p.log.Error("unexpected error: " + err.Error())
+			return err
 		}
-		p.log.Error("unexpected error: " + err.Error())
-		return err
 	}
 
 	queryAddNewPingInfo := fmt.Sprintf(
@@ -79,9 +80,9 @@ func (p *PostgreDB) AddPingInfo(ctx context.Context, pingfInfo entities.PingInfo
 		pingTable, ipField, pingTimeField, statusField,
 	)
 
-	_, err := p.db.Exec(queryAddNewPingInfo, ipFromDatabase, pingfInfo.PingTime, pingfInfo.Status)
+	_, err := p.db.Exec(queryAddNewPingInfo, pingfInfo.IPAdress, pingfInfo.PingTime, pingfInfo.Status)
 	if err != nil {
-		p.log.Error("Error inserting data to database: " + err.Error())
+		p.log.Error("Error inserting data to database(2): " + err.Error())
 		return err
 	}
 

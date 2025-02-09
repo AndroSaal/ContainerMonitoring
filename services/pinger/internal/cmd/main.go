@@ -24,7 +24,8 @@ func main() {
 	logger := mylog.MustNewLogger(cfg.Env)
 
 	// инициализация всех слоев
-	service := service.NewService(logger)
+	docker := service.NewDockerCllient()
+	service := service.NewService(docker, logger)
 	handler := api.NewHandler(service, logger)
 
 	// инициализация сервера

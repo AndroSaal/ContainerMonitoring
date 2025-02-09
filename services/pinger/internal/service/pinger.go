@@ -65,7 +65,6 @@ func (s *Service) StartPing(ctx context.Context, interval time.Duration, ipAddre
 			}
 		}
 	}
-
 	return nil
 }
 
@@ -77,7 +76,7 @@ func (s *Service) SendPingInfo(ctx context.Context, pingInfo entities.PingInfo) 
 		return err
 	}
 
-	resp, err := http.Post("http://backend-service/ping", "application/json", bytes.NewBuffer(jsonData))
+	resp, err := http.Post("http://backend-service:8080/ping", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		slog.Error("Error while sending data", "error", err)
 		return err
@@ -95,8 +94,9 @@ func (s *Service) GetAllContainersIP(ctx context.Context) ([]string, error) {
 	return s.DC.GetAllContainersIP(ctx)
 }
 
-func NewService(log *slog.Logger) *Service {
+func NewService(doc DockerClientHandler, log *slog.Logger) *Service {
 	return &Service{
+		DC:  doc,
 		log: log,
 	}
 }
