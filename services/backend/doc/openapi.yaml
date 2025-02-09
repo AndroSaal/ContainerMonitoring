@@ -56,12 +56,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-  /ping/{ip}:
+  /ping/{id}:
     get:
       summary: Получить информацию о конкретном контейнере
       description: Возвращает информацию о пинге для конкретного контейнера по его IP.
       parameters:
-        - name: ip
+        - name: id
           in: path
           required: true
           schema:
@@ -97,6 +97,7 @@ components:
         - IPAdress
         - PingTime
         - LastSuccessDate
+        - Status
       type: object
       properties:
         ipAdress:
@@ -108,6 +109,9 @@ components:
         lastSuccessDate:
           type: string
           example: 22.02.2024
+        status:
+          type: string
+          example: "ok"
     errorResponse:
       type: object
       description: Используется для возвращения ошибки пользователю

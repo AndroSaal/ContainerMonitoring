@@ -10,8 +10,8 @@ import (
 
 type ServiceHandler interface {
 	AddPingInfo(ctx context.Context, pingfInfo entities.PingInfo) error
-	GetPingInfo(ctx context.Context, containerIP string) (entities.PingInfo, error)
-	GetAllContainersPingInfo(ctx context.Context) ([]entities.PingInfo, error)
+	GetPingInfo(ctx context.Context, containerIP string) (*[]entities.PingInfo, error)
+	GetAllContainersPingInfo(ctx context.Context) (*[][]entities.PingInfo, error)
 }
 
 type Service struct {
@@ -27,13 +27,12 @@ func NewService(repo repository.RepositoryHandler, log *slog.Logger) *Service {
 }
 
 func (s *Service) AddPingInfo(ctx context.Context, pingfInfo entities.PingInfo) error {
-	return nil
+	return s.repo.AddPingInfo(ctx, pingfInfo)
 }
 
-func (s *Service) GetPingInfo(ctx context.Context, containerIP string) (entities.PingInfo, error) {
-	return entities.PingInfo{}, nil
+func (s *Service) GetPingInfo(ctx context.Context, containerIP string) (*[]entities.PingInfo, error) {
+	return s.repo.GetPingInfo(ctx, containerIP)
 }
-func (s *Service) GetAllContainersPingInfo(ctx context.Context) ([]entities.PingInfo, error) {
-	return nil, nil
+func (s *Service) GetAllContainersPingInfo(ctx context.Context) (*[][]entities.PingInfo, error) {
+	return s.repo.GetAllContainersPingInfo(ctx)
 }
-

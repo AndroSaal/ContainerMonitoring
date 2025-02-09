@@ -9,16 +9,16 @@ import (
 
 // интерфейс для слоя репозитория
 type RepositoryHandler interface {
-	AddPingInfo(ctx context.Context, pingfInfo entities.PingInfo) (int, error)
-	GetPingInfo(ctx context.Context, ipAdress string) (entities.PingInfo, error)
-	GetAllContainersPingInfo(ctx context.Context) ([]entities.PingInfo, error)
+	AddPingInfo(ctx context.Context, pingfInfo entities.PingInfo) error
+	GetPingInfo(ctx context.Context, ipAdress string) (*[]entities.PingInfo, error)
+	GetAllContainersPingInfo(ctx context.Context) (*[][]entities.PingInfo, error)
 }
 
 // интерфейс для реляционной БД
 type RelDB interface {
-	AddPingInfo(ctx context.Context, pingfInfo entities.PingInfo) (int, error)
-	GetPingInfo(ctx context.Context, ipAdress string) (entities.PingInfo, error)
-	GetAllContainersPingInfo(ctx context.Context) ([]entities.PingInfo, error)
+	AddPingInfo(ctx context.Context, pingfInfo entities.PingInfo) error
+	GetPingInfo(ctx context.Context, ipAdress string) (*[]entities.PingInfo, error)
+	GetAllContainersPingInfo(ctx context.Context) (*[][]entities.PingInfo, error)
 	CloseConnection()
 }
 
@@ -35,19 +35,19 @@ func NewRepository(relDB RelDB, log *slog.Logger) *Repository {
 	}
 }
 
-func (r *Repository) AddPingInfo(ctx context.Context, pingfInfo entities.PingInfo) (int, error) {
+func (r *Repository) AddPingInfo(ctx context.Context, pingfInfo entities.PingInfo) error {
 	r.log.Info("AddPingInfo", "containerIP", pingfInfo.IPAdress)
 	return r.relDB.AddPingInfo(ctx, pingfInfo)
 
 }
 
-func (r *Repository) GetPingInfo(ctx context.Context, ipAdress string) (entities.PingInfo, error) {
-	r.log.Info("GetPingInfo", "containerId", ipAdress)
+func (r *Repository) GetPingInfo(ctx context.Context, ipAdress string) (*[]entities.PingInfo, error) {
+	r.log.Info("GetPingInfo", "containerIP", ipAdress)
 	return r.relDB.GetPingInfo(ctx, ipAdress)
 
 }
 
-func (r *Repository) GetAllContainersPingInfo(ctx context.Context) ([]entities.PingInfo, error) {
+func (r *Repository) GetAllContainersPingInfo(ctx context.Context) (*[][]entities.PingInfo, error) {
 	r.log.Info("GetAllContainersPingInfo")
 	return r.relDB.GetAllContainersPingInfo(ctx)
 }

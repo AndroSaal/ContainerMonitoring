@@ -51,7 +51,7 @@ func (h *Handler) getAllContainersInfo(c *gin.Context) {
 
 func (h *Handler) getContainerInfo(c *gin.Context) {
 	fi := "api.handler.getContainerInfo"
-	var pingInfo entities.PingInfo
+
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
 	defer cancel()
 
