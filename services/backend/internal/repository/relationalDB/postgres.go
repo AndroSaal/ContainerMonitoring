@@ -54,6 +54,7 @@ func (p *PostgreDB) AddPingInfo(ctx context.Context, pingfInfo entities.PingInfo
 		idField, ipTable, ipField,
 	)
 	rowSelect := p.db.QueryRow(querySelect, pingfInfo.IPAdress)
+	p.log.Info("Executing query: " + querySelect)
 
 	var ipFromDatabase string
 	if err := rowSelect.Scan(&ipFromDatabase); err != nil {
@@ -106,7 +107,6 @@ func (p *PostgreDB) GetPingInfo(ctx context.Context, ipAdress string) (*[]entiti
 		p.log.Error("unexpected error: " + err.Error())
 		return nil, err
 	}
-	defer p.closeSomething(rowsSelect.Close(), "can't close rows")
 
 	// Заполняем полученную информацию в слайс
 	info := make([]entities.PingInfo, 0)
@@ -123,6 +123,8 @@ func (p *PostgreDB) GetPingInfo(ctx context.Context, ipAdress string) (*[]entiti
 	p.log.Info(fmt.Sprintf("Got %d ping infos", len(info)))
 	p.log.Info(fmt.Sprintf("There are %v ping infos", info))
 
+	defer p.closeSomething(rowsSelect.Close(), "can't close rows")
+
 	return &info, nil
 }
 
@@ -133,12 +135,12 @@ func (p *PostgreDB) GetAllContainersPingInfo(ctx context.Context) (*[]entities.P
 		ipField, ipTable,
 	)
 
+	p.log.Info("Executing query: " + querySelect)
 	rowsSelect, err := p.db.Query(querySelect)
 	if err != nil {
 		p.log.Error("unexpected error: " + err.Error())
 		return nil, err
 	}
-	defer p.closeSomething(rowsSelect.Close(), "can't close rows")
 
 	sliceInfos := make([]entities.PingInfo, 0)
 	for rowsSelect.Next() {
@@ -161,6 +163,7 @@ func (p *PostgreDB) GetAllContainersPingInfo(ctx context.Context) (*[]entities.P
 	}
 	p.log.Info(fmt.Sprintf("Got %d ping infos", len(sliceInfos)))
 	p.log.Info(fmt.Sprintf("There are all containers %v ping infos", sliceInfos))
+	defer p.closeSomething(rowsSelect.Close(), "can't close rows")
 	return &sliceInfos, nil
 }
 
