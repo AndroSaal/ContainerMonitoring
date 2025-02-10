@@ -45,7 +45,9 @@ func (h *Handler) getAllContainersInfo(c *gin.Context) {
 	}
 
 	h.logger.Info("success finish", fi, pingInfoS)
-	c.JSON(http.StatusOK, pingInfoS)
+	c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{
+		"AllContainersPingInfo": *pingInfoS,
+	})
 
 }
 
@@ -68,7 +70,7 @@ func (h *Handler) getContainerInfo(c *gin.Context) {
 	}
 
 	h.logger.Info("success finish", fi, pingInfo)
-	c.JSON(http.StatusOK, pingInfo)
+	c.JSON(http.StatusOK, *pingInfo)
 }
 
 func (h *Handler) addContainerInfo(c *gin.Context) {

@@ -93,7 +93,7 @@ func (p *PostgreDB) GetPingInfo(ctx context.Context, ipAdress string) (*[]entiti
 
 	// Получаем информацию о пингах из базы
 	querySelect := fmt.Sprintf(
-		"SELECT %s, %s FROM %s WHERE %s = $1 LIMIT 10",
+		"SELECT %s, %s FROM %s WHERE %s = $1 LIMIT 2",
 		pingTimeField, statusField, pingTable, ipField,
 	)
 
@@ -116,14 +116,17 @@ func (p *PostgreDB) GetPingInfo(ctx context.Context, ipAdress string) (*[]entiti
 			p.log.Error("unexpected error: " + err.Error())
 			return nil, err
 		}
+		p.log.Info(fmt.Sprintf("Got {ping} INFO %v", pingInfo))
 		pingInfo.IPAdress = ipAdress
 		info = append(info, pingInfo)
 	}
+	p.log.Info(fmt.Sprintf("Got %d ping infos", len(info)))
+	p.log.Info(fmt.Sprintf("There are %v ping infos", info))
 
 	return &info, nil
 }
 
-func (p *PostgreDB) GetAllContainersPingInfo(ctx context.Context) (*[][]entities.PingInfo, error) {
+func (p *PostgreDB) GetAllContainersPingInfo(ctx context.Context) (*[]entities.PingInfo, error) {
 	//Получае все ip адреса из базы
 	querySelect := fmt.Sprintf(
 		"SELECT %s FROM %s",
@@ -137,13 +140,14 @@ func (p *PostgreDB) GetAllContainersPingInfo(ctx context.Context) (*[][]entities
 	}
 	defer p.closeSomething(rowsSelect.Close(), "can't close rows")
 
-	sliceInfos := make([][]entities.PingInfo, 0)
+	sliceInfos := make([]entities.PingInfo, 0)
 	for rowsSelect.Next() {
 		var ip string
 		if err := rowsSelect.Scan(&ip); err != nil {
 			p.log.Error("unexpected error: " + err.Error())
 			return nil, err
 		}
+		p.log.Info(fmt.Sprintf("Got ip %s", ip))
 
 		info, err := p.GetPingInfo(ctx, ip)
 		if err != nil {
@@ -151,10 +155,12 @@ func (p *PostgreDB) GetAllContainersPingInfo(ctx context.Context) (*[][]entities
 			return nil, err
 
 		}
+		p.log.Info(fmt.Sprintf("Got info after ping ip: %v ", *info))
 
-		sliceInfos = append(sliceInfos, *info)
+		sliceInfos = append(sliceInfos, *info...)
 	}
-
+	p.log.Info(fmt.Sprintf("Got %d ping infos", len(sliceInfos)))
+	p.log.Info(fmt.Sprintf("There are all containers %v ping infos", sliceInfos))
 	return &sliceInfos, nil
 }
 

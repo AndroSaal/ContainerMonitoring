@@ -9,8 +9,8 @@ type ErrorResponse struct {
 }
 
 type PingInfo struct {
-	IPAdress    string      `json:"ipAdress"`
-	PingTime    time.Time   `json:"pingTime"`
-	LastSuccess interface{} `json:"lastSuccessDate"`
-	Status      string      `json:"status"`
+	IPAdress    string      `json:"ipAdress" db:"ip"`
+	PingTime    time.Time   `json:"pingTime" db:"ping_time"`
+	LastSuccess interface{} `json:"lastSuccessDate" db:"last_success"`
+	Status      string      `json:"status" db:"status"`
 }

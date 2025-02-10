@@ -11,14 +11,14 @@ import (
 type RepositoryHandler interface {
 	AddPingInfo(ctx context.Context, pingfInfo entities.PingInfo) error
 	GetPingInfo(ctx context.Context, ipAdress string) (*[]entities.PingInfo, error)
-	GetAllContainersPingInfo(ctx context.Context) (*[][]entities.PingInfo, error)
+	GetAllContainersPingInfo(ctx context.Context) (*[]entities.PingInfo, error)
 }
 
 // интерфейс для реляционной БД
 type RelDB interface {
 	AddPingInfo(ctx context.Context, pingfInfo entities.PingInfo) error
 	GetPingInfo(ctx context.Context, ipAdress string) (*[]entities.PingInfo, error)
-	GetAllContainersPingInfo(ctx context.Context) (*[][]entities.PingInfo, error)
+	GetAllContainersPingInfo(ctx context.Context) (*[]entities.PingInfo, error)
 	CloseConnection()
 }
 
@@ -47,7 +47,7 @@ func (r *Repository) GetPingInfo(ctx context.Context, ipAdress string) (*[]entit
 
 }
 
-func (r *Repository) GetAllContainersPingInfo(ctx context.Context) (*[][]entities.PingInfo, error) {
+func (r *Repository) GetAllContainersPingInfo(ctx context.Context) (*[]entities.PingInfo, error) {
 	r.log.Info("GetAllContainersPingInfo")
 	return r.relDB.GetAllContainersPingInfo(ctx)
 }
