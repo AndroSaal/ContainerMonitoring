@@ -91,7 +91,7 @@ func (p *PostgreDB) AddPingInfo(ctx context.Context, pingfInfo entities.PingInfo
 }
 
 func (p *PostgreDB) GetPingInfo(ctx context.Context, ipAdress string) (*[]entities.PingInfo, error) {
-
+	fi := "repository/postgres GetPingInfo"
 	// Получаем информацию о пингах из базы
 	querySelect := fmt.Sprintf(
 		"SELECT %s, %s FROM %s WHERE %s = $1 LIMIT 2",
@@ -120,8 +120,8 @@ func (p *PostgreDB) GetPingInfo(ctx context.Context, ipAdress string) (*[]entiti
 		pingInfo.IPAdress = ipAdress
 		info = append(info, pingInfo)
 	}
-	p.log.Info(fmt.Sprintf("Got %d ping infos", len(info)))
-	p.log.Info(fmt.Sprintf("There are %v ping infos", info))
+	p.log.Info(fmt.Sprintf(fi+"Got %d ping infos", len(info)))
+	p.log.Info(fmt.Sprintf(fi+"There are %v ping infos", info))
 
 	defer p.closeSomething(rowsSelect.Close(), "can't close rows")
 
