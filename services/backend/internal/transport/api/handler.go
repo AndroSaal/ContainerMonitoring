@@ -47,7 +47,6 @@ func (h *Handler) getAllContainersInfo(c *gin.Context) {
 	pingInfosResponse := transformInfos(pingInfoS)
 
 	h.logger.Info("success finish", fi, pingInfosResponse)
-	c.JSON(http.StatusOK, *pingInfosResponse)
 	c.AbortWithStatusJSON(http.StatusOK, map[string]interface{}{
 		"AllContainersPingInfo": *pingInfosResponse,
 	})
