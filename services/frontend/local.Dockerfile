@@ -1,24 +1,16 @@
-FROM node:16
+# Используем базовый образ Node.js
+FROM node:16 AS build
 WORKDIR /app
-COPY package*.json ./
-# COPY ./public ./public
+COPY package.json package-lock.json ./
 
-# Устанавливаем зависимости
+RUN apk update && apk add --no-cache \
+    python3 gcc g++ musl-dev libgcc libstdc++
 RUN npm install
-
-# Копируем исходный код
-# COPY ./src/components ./src/components
-# COPY ./src/App.tsx ./src/App.tsx
-# COPY ./src/index.css ./src/index.css 
-# COPY ./src/index.tsx ./src/index.tsx 
 COPY . .
-
-# Собираем приложение
-RUN rm -rf src/logo.svg src/App.css src/App.test.js src/reportWebVitals.js src/setupTests.js
 RUN npm run build
 
-# Указываем порт, который будет использовать сервис
-EXPOSE 3000
-
-# Запускаем приложение
-CMD ["npm", "start"]
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
